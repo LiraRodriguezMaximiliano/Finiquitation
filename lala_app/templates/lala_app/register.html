@@ -1,0 +1,221 @@
+<!-- lala_app/templates/lala_app/register.html -->
+{% extends 'lala_app/base.html' %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-form">
+        <h2>Crear Cuenta</h2>
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="id_username">Usuario:</label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                        <div class="error">{{ form.username.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="id_first_name">Nombre:</label>
+                    {{ form.first_name }}
+                    {% if form.first_name.errors %}
+                        <div class="error">{{ form.first_name.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="id_last_name">Apellido:</label>
+                    {{ form.last_name }}
+                    {% if form.last_name.errors %}
+                        <div class="error">{{ form.last_name.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="id_email">Correo Electrónico:</label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <div class="error">{{ form.email.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_telefono">Teléfono:</label>
+                {{ form.telefono }}
+                {% if form.telefono.errors %}
+                    <div class="error">{{ form.telefono.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_direccion">Dirección:</label>
+                {{ form.direccion }}
+                {% if form.direccion.errors %}
+                    <div class="error">{{ form.direccion.errors }}</div>
+                {% endif %}
+            </div>
+
+            <!-- CONTRASEÑA CON BOTÓN PARA VER -->
+            <div class="form-group">
+                <label for="id_password1">Contraseña:</label>
+                <div class="password-container" style="position: relative;">
+                    {{ form.password1 }}
+                    <button type="button" class="toggle-password" onclick="togglePassword('id_password1')" 
+                            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); 
+                                   background: none; border: none; cursor: pointer; font-size: 1.2em; padding: 5px;">
+                        👁️
+                    </button>
+                </div>
+                {% if form.password1.errors %}
+                    <div class="error">{{ form.password1.errors }}</div>
+                {% endif %}
+                <div class="password-hints" style="font-size: 0.85em; color: #7f8c8d; margin-top: 5px;">
+                    <small>• Mínimo 8 caracteres</small><br>
+                    <small>• No puede ser solo números</small>
+                </div>
+            </div>
+
+            <!-- CONFIRMAR CONTRASEÑA CON BOTÓN PARA VER -->
+            <div class="form-group">
+                <label for="id_password2">Confirmar Contraseña:</label>
+                <div class="password-container" style="position: relative;">
+                    {{ form.password2 }}
+                    <button type="button" class="toggle-password" onclick="togglePassword('id_password2')" 
+                            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); 
+                                   background: none; border: none; cursor: pointer; font-size: 1.2em; padding: 5px;">
+                        👁️
+                    </button>
+                </div>
+                {% if form.password2.errors %}
+                    <div class="error">{{ form.password2.errors }}</div>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn-primary">Registrarse</button>
+        </form>
+        <p>¿Ya tienes cuenta? <a href="{% url 'login' %}">Inicia sesión aquí</a></p>
+    </div>
+</div>
+
+<script>
+// Función para mostrar/ocultar contraseña
+function togglePassword(inputId) {
+    const passwordInput = document.getElementById(inputId);
+    const toggleButton = passwordInput.nextElementSibling;
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleButton.textContent = '👁️‍🗨️';
+        toggleButton.setAttribute('aria-label', 'Ocultar contraseña');
+    } else {
+        passwordInput.type = 'password';
+        toggleButton.textContent = '👁️';
+        toggleButton.setAttribute('aria-label', 'Mostrar contraseña');
+    }
+}
+
+// Mejorar la experiencia: también para el campo de confirmación
+document.addEventListener('DOMContentLoaded', function() {
+    // Asegurar que los inputs tengan el padding correcto para el botón
+    const passwordInputs = document.querySelectorAll('#id_password1, #id_password2');
+    passwordInputs.forEach(input => {
+        input.style.paddingRight = '40px';
+    });
+    
+    // También agregar funcionalidad con teclado
+    document.addEventListener('keydown', function(e) {
+        if (e.altKey && e.key === '1') {
+            togglePassword('id_password1');
+        }
+        if (e.altKey && e.key === '2') {
+            togglePassword('id_password2');
+        }
+    });
+});
+</script>
+
+<style>
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.error {
+    color: #e74c3c;
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #ecf0f1;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box; /* Asegura que el padding no afecte el ancho */
+}
+
+.form-control:focus {
+    border-color: #3498db;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+/* Estilo para el contenedor de contraseña */
+.password-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-container .form-control {
+    padding-right: 40px; /* Espacio para el botón del ojo */
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2em;
+    padding: 5px;
+    color: #7f8c8d;
+    transition: color 0.3s ease;
+    z-index: 2;
+}
+
+.toggle-password:hover {
+    color: #3498db;
+}
+
+/* Estilo cuando se muestra la contraseña */
+.password-visible {
+    letter-spacing: 0.5px;
+}
+
+/* Mejoras para móviles */
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .toggle-password {
+        font-size: 1.3em; /* Un poco más grande en móviles */
+        padding: 8px;
+    }
+    
+    .password-container .form-control {
+        padding-right: 45px; /* Más espacio en móviles */
+    }
+}
+</style>
+{% endblock %}
